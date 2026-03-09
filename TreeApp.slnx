@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TreeApp.Test/TreeApp.Test.csproj" />
+  <Project Path="TreeApp/TreeApp.csproj" />
+</Solution>
