@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TreeApp\TreeApp.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 
 </Project>
