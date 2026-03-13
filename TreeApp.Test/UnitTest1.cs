@@ -1,10 +1,48 @@
 ﻿namespace TreeApp.Test;
+using Models;
 
 public class UnitTest1
 {
     [Fact]
-    public void Test1()
+    public void Insert()
     {
-
+        BinaryTree tree = new BinaryTree();
+        tree.Insert(10);
+        Assert.NotNull(tree);
+        Assert.Equal(tree.root.Value , 10);
+    }
+    [Fact]
+    public void InsertLeftValue()
+    {
+        BinaryTree tree = new BinaryTree();
+        tree.Insert(10);
+        tree.Insert(5);
+        Assert.Equal(tree.root.Left.Value , 5);
+    }
+    [Fact]
+    public void InsertRightValue()
+    {
+        BinaryTree tree = new();
+        tree.Insert(10);
+        tree.Insert(5);
+        tree.Insert(50);
+        tree.Insert(46);
+        Assert.Equal(50, tree.root!.Right!.Value);
+        Assert.Equal(46, tree.root.Right.Left!.Value);
+    }
+    [Fact]
+    public void InOrder()
+    {
+        // Given
+        BinaryTree tree = new();
+        tree.Insert(10);
+        tree.Insert(5);
+        tree.Insert(50);
+        tree.Insert(46);
+        // When
+        string expected = "5, 10, 46, 50, ";
+        
+        // Then
+        Assert.Equal(expected, tree.InOrder());
     }
 }
