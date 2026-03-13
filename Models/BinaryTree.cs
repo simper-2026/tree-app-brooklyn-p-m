@@ -76,7 +76,33 @@ public class BinaryTree
     }
     public int Height()
     {
-        return 0;
+        int value = 0;
+        return Height(root!, value);
+    }
+    private int Height(Node current, int value)
+    {
+        if (current != null)
+        {
+            int left = 0;
+            int right = 0;
+            if (current.Left != null)
+            {
+                left = Height(current.Left, left);
+            }
+            if (current.Right != null)
+            {
+                right = Height(current.Right, right);
+            }
+            if (left > right)
+            {
+                value += right;
+            }
+            else
+            {
+                value += left;
+            }
+        }
+        return value;
     }
     public string ToMermaid()
     {
