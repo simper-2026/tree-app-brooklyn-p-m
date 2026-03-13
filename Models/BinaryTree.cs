@@ -106,7 +106,39 @@ public class BinaryTree
     }
     public string ToMermaid()
     {
-        return "";
+        return ToMermaid(root!, new());
+    }
+    private string ToMermaid(Node current, StringBuilder s)
+    {
+        if(current != null)
+        {
+            if(current.Left != null)
+            {
+                s.Append($"{current.Value} --> {current.Left.Value}");
+            }
+            else
+            {
+                s.Append($"{current.Value} --> FIX");
+            }
+            if(current.Right != null)
+            {
+                s.Append($"{current.Value} --> {current.Right.Value}");
+            }
+            else
+            {
+                s.Append($"{current.Value} --> FIX");
+            }
+            if(current.Left != null)
+            {
+                s.Append(ToMermaid(current.Left, s));
+            }
+            if(current.Right != null)
+            {
+                s.Append(ToMermaid(current.Right, s));
+            }
+
+        }
+        return s.ToString();
     }
 
 }

@@ -60,4 +60,27 @@ public class UnitTest1
         // Then
         Assert.Equal(3, i);
     }
+    [Fact]
+    public void ToMermaid()
+    {
+        // Given
+        BinaryTree tree = new();
+        tree.Insert(10);
+        // When
+        string s = "10 --> FIX10 --> FIX";
+        // Then
+        Assert.Equal(s, tree.ToMermaid());
+    }
+    [Fact]
+    public void ToMermaidMultipleValues()
+    {
+        // Given
+        BinaryTree tree = new();
+        tree.Insert(10);
+        tree.Insert(12);
+        // When
+        string s = "10 --> FIX10 --> 1212 --> FIX12 --> FIX";
+        // Then
+        Assert.Equal(s, tree.ToMermaid());
+    }
 }
