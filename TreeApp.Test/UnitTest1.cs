@@ -67,7 +67,7 @@ public class UnitTest1
         BinaryTree tree = new();
         tree.Insert(10);
         // When
-        string s = "10 --> FIX10 --> FIX";
+        string s = "graph TD\n10";
         // Then
         Assert.Equal(s, tree.ToMermaid());
     }
@@ -77,9 +77,10 @@ public class UnitTest1
         // Given
         BinaryTree tree = new();
         tree.Insert(10);
-        tree.Insert(12);
+        tree.Insert(5);
+        //tree.Insert(12);
         // When
-        string s = "10 --> FIX10 --> 1212 --> FIX12 --> FIX";
+        string s = "graph TD\n10 --> 5\n5 --> FIX\n5 --> FIX\n10 --> FIX\n";
         // Then
         Assert.Equal(s, tree.ToMermaid());
     }

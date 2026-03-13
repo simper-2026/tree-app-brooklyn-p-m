@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using System.IO.Pipelines;
 using System.Text;
 
 namespace Models;
@@ -106,39 +107,44 @@ public class BinaryTree
     }
     public string ToMermaid()
     {
-        return ToMermaid(root!, new());
-    }
-    private string ToMermaid(Node current, StringBuilder s)
-    {
-        if(current != null)
+        if (root == null)
         {
-            if(current.Left != null)
-            {
-                s.Append($"{current.Value} --> {current.Left.Value}");
-            }
-            else
-            {
-                s.Append($"{current.Value} --> FIX");
-            }
-            if(current.Right != null)
-            {
-                s.Append($"{current.Value} --> {current.Right.Value}");
-            }
-            else
-            {
-                s.Append($"{current.Value} --> FIX");
-            }
-            if(current.Left != null)
-            {
-                s.Append(ToMermaid(current.Left, s));
-            }
-            if(current.Right != null)
-            {
-                s.Append(ToMermaid(current.Right, s));
-            }
-
+            return "graph TD";
         }
-        return s.ToString();
+        if (root.Left == null && root.Right == null)
+        {
+            return $"graph TD\n{root.Value}";
+        }
+        int links = 0;
+        return $"graph TD\n{ToMermaid(root!, ref links)}";
+    }
+    private string ToMermaid(Node current, ref int links)
+    {
+        if (current == null)
+        {
+            return string.Empty;
+        }
+        string result = string.Empty;
+        if (current.Left != null)
+        {
+            result += $"{current.Value} --> {current.Left.Value}\n";
+            result += ToMermaid(current.Left, ref links);
+        }
+        else
+        {
+            result += $"{current.Value} --> FIX\n";
+        }
+        if (current.Right != null)
+        {
+            result += $"{current.Value} --> {current.Right.Value}\n";
+            result += ToMermaid(current.Right, ref links);
+        }
+        else
+        {
+            result += $"{current.Value} --> FIX\n";
+        }
+
+        return result;
     }
 
 }
