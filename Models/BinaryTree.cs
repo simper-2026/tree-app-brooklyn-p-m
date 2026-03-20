@@ -1,55 +1,122 @@
-﻿using System.Dynamic;
-using System.IO.Pipelines;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Text;
 
 namespace Models;
 
 public class BinaryTree
 {
     public Node? root;
+
     public void Insert(int value)
     {
-        Insert(root, value);
+        root = Insert(root, value, null);
     }
-    private void Insert(Node? current, int insert)
+
+    private Node Insert(Node? current, int value, Node? parent)
     {
+
         if (current == null)
         {
-            root = new Node(insert, null, null, null);
+            return new Node(value, parent);
+        }
+
+        if (value < current.Value)
+        {
+            current.Left = Insert(current.Left, value, current);
+        }
+        else if (value > current.Value)
+        {
+            current.Right = Insert(current.Right, value, current);
         }
         else
         {
-            if (current.Value == insert)
-            {
-                return;
-            }
-            else
-            {
-                if (current.Value > insert)
-                {
-                    if (current.Left != null)
-                        Insert(current.Left, insert);
-                    else
-                    {
-                        current.Left = new Node(insert, null, null, current);
-                        Height();
-                    }
-                }
-                if (current.Value < insert)
-                {
-                    if (current.Right != null)
-                        Insert(current.Right, insert);
-                    else
-                    {
-                        current.Right = new Node(insert, null, null, current);
-                        Height();
-                    }
-
-                }
-            }
+            return current; 
         }
+
+        UpdateHeight(current);
+
+        return Rebalance(current);
     }
+
+    private Node Rebalance(Node current)
+    {
+        int balance = GetBalance(current);
+
+        // Left
+        if (balance > 1)
+        {
+            // Left-Right Case
+            if (GetBalance(current.Left) < 0)
+            {
+                current.Left = RotateLeft(current.Left!);
+            }
+            return RotateRight(current);
+        }
+
+        // Right 
+        if (balance < -1)
+        {
+            // Right-Left Case
+            if (GetBalance(current.Right) > 0)
+            {
+                current.Right = RotateRight(current.Right!);
+            }
+            return RotateLeft(current);
+        }
+
+        return current;
+    }
+
+    private Node RotateRight(Node y)
+    {
+        Node x = y.Left!;
+        Node T2 = x.Right;
+
+        // Perform rotation
+        x.Right = y;
+        y.Left = T2;
+
+        // Update Parents
+        x.Parent = y.Parent;
+        y.Parent = x;
+        if (T2 != null) T2.Parent = y;
+
+        // Update heights
+        UpdateHeight(y);
+        UpdateHeight(x);
+
+        return x;
+    }
+
+    private Node RotateLeft(Node x)
+    {
+        Node y = x.Right!;
+        Node T2 = y.Left;
+
+        // Perform rotation
+        y.Left = x;
+        x.Right = T2;
+
+        // Update Parents
+        y.Parent = x.Parent;
+        x.Parent = y;
+        if (T2 != null) T2.Parent = x;
+
+        // Update heights
+        UpdateHeight(x);
+        UpdateHeight(y);
+
+        return y;
+    }
+
+    private void UpdateHeight(Node n)
+    {
+        n.Height = 1 + Math.Max(GetHeight(n.Left), GetHeight(n.Right));
+    }
+
+    private int GetHeight(Node? n) => n?.Height ?? -1;
+
+    private int GetBalance(Node? n) => n == null ? 0 : GetHeight(n.Left) - GetHeight(n.Right);
+
     public string InOrder()
     {
         return InOrder(root!, new());
@@ -77,30 +144,6 @@ public class BinaryTree
             }
         }
         return s.ToString();
-    }
-    public int Height()
-    {
-        int value = 0;
-        return Height(root!, value);
-    }
-    private int Height(Node current, int value)
-    {
-        if (current != null)
-        {
-            int left = 0, right = 0;
-            left = current.Left is null ? 0 : Height(current.Left, left);
-            right = current.Right is null ? 0 : Height(current.Right, right);
-            if (left > right)
-            {
-                current.Height = left;
-                return left + 1;
-            } else
-            {
-                current.Height = right;
-                return right + 1;
-            }
-        }
-        return 0;
     }
     public string ToMermaid()
     {
@@ -158,30 +201,20 @@ public class BinaryTree
 
         return result;
     }
-    Node RotateRight(Node z)
-    {
-        Node y = z.Left;
-        Node t3 = y.Right;   // T3 moves from y's right to z's left
-        y.Right = z;
-        z.Left = t3;
-        return y;                // y is the new root of this subtree
-    }
-    Node RotateLeft(Node z)
-    {
-        Node y = z.Right;
-        Node t2 = y.Left;
-        y.Left = z;
-        z.Right = t2;
-        return y;
-    }
-
 }
 
-public class Node(int value, Node right, Node left, Node parent, int height = 0)
+public class Node
 {
-    public int Value { get; set; } = value;
-    public Node? Left = left;
-    public Node? Right = right;
-    public Node? Parent = parent;
-    public int Height = height;
+    public int Value { get; set; }
+    public Node? Left { get; set; }
+    public Node? Right { get; set; }
+    public Node? Parent { get; set; }
+    public int Height { get; set; }
+
+    public Node(int value, Node? parent)
+    {
+        Value = value;
+        Parent = parent;
+        Height = 0;
+    }
 }
