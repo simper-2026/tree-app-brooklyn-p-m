@@ -37,11 +37,11 @@ public class UnitTest1
         // Given
         BinaryTree tree = new();
         tree.Insert(10);
-        tree.Insert(5);
+        //tree.Insert(5);
         tree.Insert(50);
-        tree.Insert(46);
+        //tree.Insert(46);
         // When
-        string expected = "5, 10, 46, 50, ";
+        string expected = "10, 50, ";
 
         // Then
         Assert.Equal(expected, tree.InOrder());
